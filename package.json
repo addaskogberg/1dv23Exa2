@@ -1,0 +1,25 @@
+{
+  "name": "1dv023-examination2",
+  "version": "1.0.0",
+  "description": "examination2",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1dv023/as224wq-examination-2.git"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "javascript",
+    "examination2"
+  ],
+  "author": "Adda Skogberg",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/1dv023/as224wq-examination-2/issues"
+  },
+  "homepage": "https://github.com/1dv023/as224wq-examination-2#readme"
+}
