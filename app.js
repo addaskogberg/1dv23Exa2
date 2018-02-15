@@ -1,30 +1,28 @@
 
-var express = require('express')
+const express = require('express')
 const bodyParser = require('body-parser')
+const handlebars = require('express-handlebars')
+const mongoose = require('./config/mongoose.js')
 
-var app = express()
+const app = express()
 app.set('port', process.env.PORT || 3000)
 
-const mongoose = require('./config/mongoose.js')
 // Connect to the database.
 mongoose.run().catch(error => {
   console.error(error)
   process.exit(1)
 })
 
- // set upp handlebars view engine
-const handlebars = require('express-handlebars')
-// var handlebars = require('express-handlebars')
-/*   .create({ defaultLayout: 'main' })
-app.engine('handlebars', handlebars.engine)
-app.set('view engine', 'handlebars') */
-app.engine('handlebars', handlebars({defaultLayout: 'main'}))
+// set upp handlebars and view engine
+app.engine('handlebars', handlebars({
+  defaultLayout: 'main'
+}))
 app.set('view engine', 'handlebars')
 
+// Parse application encoding
+app.use(bodyParser.urlencoded({ extended: true }))
+
 app.get('/', function (req, res) {
-  res.render('layouts/home')
-})
-app.get('/skitbil', function (req, res) {
   res.render('layouts/home')
 })
 app.get('/form', function (req, res) {
@@ -52,7 +50,6 @@ app.use(function (err, req, res, next) {
 app.use(bodyParser.urlencoded({extended: true}))
 
 // initiating routs
-console.log('i app.js')
 app.use('/layouts', require('./routes/routes.js'))
 app.use((req, res, next) => res.status(404).render('404'))
 
