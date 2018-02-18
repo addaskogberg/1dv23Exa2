@@ -7,11 +7,12 @@ router.route('/')
 .get(async (req, res) => {
   try {
     const snippets = await Snippet.find({}).exec()
-    res.render('layouts/home', { snippets })
+    res.render('layouts/home', { snippets, user: req.session.user })
   } catch (error) {
     res.render('layouts/home', {
       flash: { type: 'danger', text: error.message },
       snippets: []
+
     })
   }
 })
@@ -37,6 +38,8 @@ router.route('/login')
 
       // test matching password
       if (user.comparePassword(formpassword)) {
+        // Save to session
+        req.session.user = formusername
         res.render('layouts/login', { formusername })
       } else {
         res.render('layouts/login', { formusername: 'Something went wrong!' })
@@ -56,7 +59,7 @@ router.route('/login')
 */
 router.route('/createsnippet')
 .get(async (req, res) => {
-  res.render('layouts/createsnippet', {snippet: undefined})
+  res.render('layouts/createsnippet', {snippet: undefined, user: req.session.user})
 })
 .post(async(req, res, next) => {
   try {

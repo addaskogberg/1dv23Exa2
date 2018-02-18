@@ -25,8 +25,8 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 // Setup session store with the given options.
 const sessionOptions = {
-  name: 'name of keyboard cat', // Don't use default session cookie name.
-  secret: 'keyboard cat', // Change it!!! The secret is used to hash the session with HMAC.
+  name: 'authenticated user', // my reason to coookie
+  secret: 'myUser', // my secret to hash the session with HMAC.
   resave: false,
   saveUninitialized: false,
   cookie: {
