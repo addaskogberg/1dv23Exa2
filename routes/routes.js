@@ -28,22 +28,20 @@ router.route('/login')
 })
 .post(async(req, res, next) => {
   try {
-    let username = req.body.username
-    let password = encrypt(req.body.password)
-    let user = await User.find({username}).exec()
+    let formusername = req.body.username
+    let formpassword = encrypt(req.body.password)
+    // let users = await User.find({username}).exec()
 
-    console.log(user.password + ' ' + password)
-    res.render('layouts/login', { user })
-      /*
-      if (users.password === password) {
-        console.log('kör efter.then')
-        req.session.flash = {type: 'success', text: 'You are logged in'}
-        res.render('layouts/login', { users })
+    User.findOne({ username: formusername }, function (err, user) {
+      if (err) throw err
+
+      // test matching password
+      if (user.comparePassword(formpassword)) {
+        res.render('layouts/login', { formusername })
       } else {
-        req.session.flash = {type: 'warning', text: 'You couldn\'t sign in'}
-        res.render('layouts/login', { users })
+        res.render('layouts/login', { formusername: 'Something went wrong!' })
       }
-*/
+    })
   } catch (error) {
     return res.render('layouts/login', {
       validationErrors: [error.message] || [error.errors.snippet.message],
@@ -110,32 +108,3 @@ function encrypt (password) {
 
 // Exports.
 module.exports = router
-
-/* .get(async (req, res) => {
-  try {
-    res.render('layouts/login')
-  } catch (error) {
-    res.render('layouts/login', {
-      flash: { type: 'danger', text: error.message }
-    })
-  }
-}) */
-
-/* .post(async(req, res, next) => {
-  try {
-    let username = req.body.username
-    let password = encrypt(req.body.password)
-    const users = await User.find({username}).exec()
-  } catch (error) {
-    return res.render('layouts/login', {
-      validationErrors: [error.message] || [error.errors.snippet.message],
-      username: req.body.username,
-      password: req.body.password
-    })
-  }
-})
- */
-
-/*
-.then(function () {
-}) */
