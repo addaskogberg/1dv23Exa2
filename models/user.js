@@ -5,8 +5,6 @@
 
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
- /*    bcrypt = require(bcrypt),
-    SALT_WORK_FACTOR = 10; */
 
 var userSchema = new Schema({
   username: {

@@ -1,9 +1,6 @@
 const router = require('express').Router()
 const Snippet = require('../models/snippet')
-
-console.log('i routes.js')
-// router.get('/', (req, res) => res.render('layouts/form'))
-// router.get('/', (req, res) => res.render('layouts/form'))
+const User = require('../models/user')
 
 /* Finds all snippets in db and returns them */
 router.route('/')
@@ -20,13 +17,38 @@ router.route('/')
 })
 
 router.route('/login')
-.get(async (req, res) => {
+.get((req, res) => {
   try {
-    const snippet = await Snippet.find({}).exec()
-    res.render('layouts/login', { snippet })
+    res.render('layouts/login')
   } catch (error) {
     res.render('layouts/login', {
       flash: { type: 'danger', text: error.message }
+    })
+  }
+})
+.post(async(req, res, next) => {
+  try {
+    let username = req.body.username
+    let password = encrypt(req.body.password)
+    let user = await User.find({username}).exec()
+
+    console.log(user.password + ' ' + password)
+    res.render('layouts/login', { user })
+      /*
+      if (users.password === password) {
+        console.log('kör efter.then')
+        req.session.flash = {type: 'success', text: 'You are logged in'}
+        res.render('layouts/login', { users })
+      } else {
+        req.session.flash = {type: 'warning', text: 'You couldn\'t sign in'}
+        res.render('layouts/login', { users })
+      }
+*/
+  } catch (error) {
+    return res.render('layouts/login', {
+      validationErrors: [error.message] || [error.errors.snippet.message],
+      username: req.body.username,
+      password: req.body.password
     })
   }
 })
@@ -54,5 +76,66 @@ router.route('/createsnippet')
   }
 })
 
+router.route('/user')
+.get(async (req, res) => {
+  try {
+    res.render('layouts/user')
+  } catch (error) {
+    res.render('layouts/user', {
+      flash: { type: 'danger', text: error.message }
+    })
+  }
+})
+.post(async(req, res, next) => {
+  try {
+    let user = new User({
+      username: req.body.username,
+      password: encrypt(req.body.password)
+    })
+    await user.save()
+    req.session.flash = {type: 'success', text: 'Your account has been created'}
+    res.redirect('.')
+  } catch (error) {
+    return res.render('layouts/user', {
+      validationErrors: [error.message] || [error.errors.snippet.message],
+      username: req.body.username,
+      password: req.body.password
+    })
+  }
+})
+
+function encrypt (password) {
+  return password + 'my5@lt'
+}
+
 // Exports.
 module.exports = router
+
+/* .get(async (req, res) => {
+  try {
+    res.render('layouts/login')
+  } catch (error) {
+    res.render('layouts/login', {
+      flash: { type: 'danger', text: error.message }
+    })
+  }
+}) */
+
+/* .post(async(req, res, next) => {
+  try {
+    let username = req.body.username
+    let password = encrypt(req.body.password)
+    const users = await User.find({username}).exec()
+  } catch (error) {
+    return res.render('layouts/login', {
+      validationErrors: [error.message] || [error.errors.snippet.message],
+      username: req.body.username,
+      password: req.body.password
+    })
+  }
+})
+ */
+
+/*
+.then(function () {
+}) */
