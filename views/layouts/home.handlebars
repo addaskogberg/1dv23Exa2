@@ -7,10 +7,10 @@
   {{#each snippets}}
   <li>
     <pre>
-    {{this.snippet}}
+    {{this.snippet}} {{this._id}}
     </pre>
     <a href="/updatesnippet" id="updatesnippet">Edit</a>
-    <a href="/deletesnippet" id='deletesnippet'>Delete</a>
+    <a href="/deletesnippet/{{this._id}}">Delete</a>
   </li>
   {{/each}}
 </ul>

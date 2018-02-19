@@ -120,14 +120,12 @@ router.route('/updatesnippet')
 })
 
 // delete snippet here
-router.route('/deletesnippet')
-.get(async (req, res) => {
-  // replace id with dynamic id
-  Snippet.deleteOne({ _id: '5a8ae3e56188ea3c6c484cba' }, function (err, snippet) {
+router.route('/deletesnippet/:id')
+.get((req, res) => {
+  Snippet.deleteOne({ _id: req.params.id }, function (err) {
     if (err) throw err
-    res.render('layouts/deletesnippet', {
-      flash: { type: 'success', text: 'You successfully deleted snippet' }
-    })
+    req.session.flash = {type: 'success', text: 'Your snippet was deleted'}
+    res.redirect('/')
   })
 })
 
