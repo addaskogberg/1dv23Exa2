@@ -95,30 +95,43 @@ router.route('/createsnippet')
 router.route('/updatesnippet')
 .get(async (req, res) => {
   // replace id with dynamic id
-  Snippet.findOne({ _id: '5a897a97b436163010c70119' }, function (err, snippet) {
+  Snippet.findOne({ _id: '5a8aaa9cdde8052d88e80c5e' }, function (err, snippet) {
     if (err) throw err
-    console.log('finding snippet ' + snippet)
+    console.log('finding snippet ' + snippet._id)
     res.render('layouts/updatesnippet', { snippet: snippet.snippet, user: req.session.user })
   })
 })
 .post(async(req, res, next) => {
   // Replace with update instead of creating new snippet as a copy :)
 
-  // try {
-  //   let snippet = new Snippet({
-  //     snippet: req.body.snippet
-  //   })
-  //   await snippet.save()
-  //   req.session.flash = {type: 'success', text: 'Your snippet is saved'}
-  //   res.redirect('.')
-  // } catch (error) {
-  //   return res.render('layouts/createsnippet', {
-  //     validationErrors: [error.message] || [error.errors.snippet.message],
-  //     snippet: req.body.snippet
-  //   })
-  // }
+  try {
+    let snippet = new Snippet({
+      snippet: req.body.snippet
+    })
+    await snippet.save()
+    req.session.flash = {type: 'success', text: 'Your snippet is saved'}
+    res.redirect('.')
+  } catch (error) {
+    return res.render('layouts/createsnippet', {
+      validationErrors: [error.message] || [error.errors.snippet.message],
+      snippet: req.body.snippet
+    })
+  }
 })
 
+// delete snippet here
+router.route('/deletesnippet')
+.get(async (req, res) => {
+  // replace id with dynamic id
+  Snippet.deleteOne({ _id: '5a8ae3e56188ea3c6c484cba' }, function (err, snippet) {
+    if (err) throw err
+    res.render('layouts/deletesnippet', {
+      flash: { type: 'success', text: 'You successfully deleted snippet' }
+    })
+  })
+})
+
+// create user
 router.route('/user')
 .get(async (req, res) => {
   try {
