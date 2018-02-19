@@ -81,6 +81,7 @@ router.route('/createsnippet')
     let snippet = new Snippet({
       snippet: req.body.snippet
     })
+    console.log(req.body.snippet)
     await snippet.save()
     req.session.flash = {type: 'success', text: 'Your snippet is saved'}
     res.redirect('.')
@@ -92,27 +93,28 @@ router.route('/createsnippet')
   }
 })
 
-router.route('/updatesnippet')
+router.route('/updatesnippet/:id')
 .get(async (req, res) => {
-  // replace id with dynamic id
-  Snippet.findOne({ _id: '5a8aaa9cdde8052d88e80c5e' }, function (err, snippet) {
+  Snippet.findOne({ _id: req.params.id }, function (err, snippet) {
     if (err) throw err
-    console.log('finding snippet ' + snippet._id)
-    res.render('layouts/updatesnippet', { snippet: snippet.snippet, user: req.session.user })
+    res.render('layouts/updatesnippet', { snippet: snippet.snippet, id: snippet._id })
   })
 })
 .post(async(req, res, next) => {
-  // Replace with update instead of creating new snippet as a copy :)
-
   try {
+    console.log(req.body.dbid)
+    Snippet.deleteOne({ _id: req.body.dbid }, function (err) {
+      if (err) throw err
+    })
     let snippet = new Snippet({
       snippet: req.body.snippet
     })
+
     await snippet.save()
-    req.session.flash = {type: 'success', text: 'Your snippet is saved'}
-    res.redirect('.')
+    req.session.flash = {type: 'success', text: 'Your snippet was updated'}
+    res.redirect('/')
   } catch (error) {
-    return res.render('layouts/createsnippet', {
+    return res.render('layouts/updatesnippet', {
       validationErrors: [error.message] || [error.errors.snippet.message],
       snippet: req.body.snippet
     })
