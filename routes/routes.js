@@ -93,6 +93,8 @@ router.route('/createsnippet')
   }
 })
 
+// update snippet
+
 router.route('/updatesnippet/:id')
 .get(async (req, res) => {
   Snippet.findOne({ _id: req.params.id }, function (err, snippet) {
@@ -100,26 +102,27 @@ router.route('/updatesnippet/:id')
     res.render('layouts/updatesnippet', { snippet: snippet.snippet, id: snippet._id })
   })
 })
-.post(async(req, res, next) => {
-  try {
-    console.log(req.body.dbid)
-    Snippet.deleteOne({ _id: req.body.dbid }, function (err) {
-      if (err) throw err
-    })
-    let snippet = new Snippet({
-      snippet: req.body.snippet
-    })
 
-    await snippet.save()
-    req.session.flash = {type: 'success', text: 'Your snippet was updated'}
-    res.redirect('/')
-  } catch (error) {
-    return res.render('layouts/updatesnippet', {
-      validationErrors: [error.message] || [error.errors.snippet.message],
-      snippet: req.body.snippet
-    })
-  }
-})
+ .post(async(req, res, next) => {
+   try {
+     console.log(req.body.dbid)
+     Snippet.deleteOne({ _id: req.body.dbid }, function (err) {
+       if (err) throw err
+     })
+     let snippet = new Snippet({
+       snippet: req.body.snippet
+     })
+
+     await snippet.save()
+     req.session.flash = {type: 'success', text: 'Your snippet was updated'}
+     res.redirect('/')
+   } catch (error) {
+     return res.render('layouts/updatesnippet', {
+       validationErrors: [error.message] || [error.errors.snippet.message],
+       snippet: req.body.snippet
+     })
+   }
+ })
 
 // delete snippet here
 router.route('/deletesnippet/:id')
