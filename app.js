@@ -8,7 +8,7 @@ const session = require('express-session')
 const app = express()
 app.set('port', process.env.PORT || 3000)
 
-// Connect to the database.
+// Connect to mongodb.
 mongoose.run().catch(error => {
   console.error(error)
   process.exit(1)
@@ -23,10 +23,10 @@ app.set('view engine', 'handlebars')
 // Parse application encoding
 app.use(bodyParser.urlencoded({ extended: true }))
 
-// Setup session store with the given options.
+// Setup session
 const sessionOptions = {
   name: 'authenticated user', // my reason to coookie
-  secret: 'myUser', // my secret to hash the session with HMAC.
+  secret: 'myUser', // my secret
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -42,7 +42,7 @@ if (app.get('env') === 'production') {
 
 app.use(session(sessionOptions))
 
-// Flash messages - survives only a round trip.
+// Flash message
 app.use((req, res, next) => {
   res.locals.flash = req.session.flash
   delete req.session.flash

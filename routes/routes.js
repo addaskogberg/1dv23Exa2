@@ -97,21 +97,16 @@ router.route('/createsnippet')
 
 router.route('/updatesnippet/:id')
 .get(async (req, res) => {
-  Snippet.findOne({ _id: req.params.id }, function (err, snippet) {
-    if (err) throw err
-    res.render('layouts/updatesnippet', { snippet: snippet.snippet, id: snippet._id })
-  })
+  const snippet = await Snippet.findOne({ _id: req.params.id })
+  res.render('layouts/updatesnippet', { snippet: snippet.snippet, id: snippet._id })
 })
 
  .post(async(req, res, next) => {
    try {
      console.log(req.body.dbid)
-     Snippet.deleteOne({ _id: req.body.dbid }, function (err) {
-       if (err) throw err
-     })
-     let snippet = new Snippet({
-       snippet: req.body.snippet
-     })
+     const snippet = await Snippet.findOne({ _id: req.body.dbid })
+     console.log(snippet)
+     snippet.snippet = req.body.snippet
 
      await snippet.save()
      req.session.flash = {type: 'success', text: 'Your snippet was updated'}
