@@ -30,6 +30,7 @@ router.route('/login')
   try {
     let formusername = req.body.username
     let formpassword = encrypt(req.body.password)
+    console.log(formpassword)
     // let users = await User.find({username}).exec()
 
     User.findOne({ username: formusername }, function (err, user) {
@@ -74,12 +75,18 @@ router.route('/logout')
 */
 router.route('/createsnippet')
 .get(async (req, res) => {
-  res.render('layouts/createsnippet', {snippet: undefined, user: req.session.user})
+  if (req.session.user) {
+    res.render('layouts/createsnippet', {snippet: undefined, user: req.session.user})
+  } else {
+    req.session.flash = {type: 'danger', text: 'you need to login to create snippet'}
+    res.redirect('/login')
+  }
 })
 .post(async(req, res, next) => {
   try {
     let snippet = new Snippet({
-      snippet: req.body.snippet
+      snippet: req.body.snippet,
+      user: req.session.user
     })
     console.log(req.body.snippet)
     await snippet.save()
@@ -93,21 +100,29 @@ router.route('/createsnippet')
   }
 })
 
+// view snippet
+router.route('/viewsnippet/:id')
+.get(async (req, res) => {
+  const snippet = await Snippet.findOne({ _id: req.params.id })
+  if (req.session.user === snippet.user) {
+    res.render('layouts/viewsnippet', { snippet: snippet.snippet, id: snippet._id, user: req.session.user })
+  } else {
+    res.render('layouts/viewsnippet', { snippet: snippet.snippet, id: snippet._id })
+  }
+})
+
 // update snippet
 
 router.route('/updatesnippet/:id')
 .get(async (req, res) => {
   const snippet = await Snippet.findOne({ _id: req.params.id })
-  res.render('layouts/updatesnippet', { snippet: snippet.snippet, id: snippet._id })
+  res.render('layouts/updatesnippet', { snippet: snippet.snippet, id: snippet._id, user: req.session.user })
 })
 
  .post(async(req, res, next) => {
    try {
-     console.log(req.body.dbid)
      const snippet = await Snippet.findOne({ _id: req.body.dbid })
-     console.log(snippet)
      snippet.snippet = req.body.snippet
-
      await snippet.save()
      req.session.flash = {type: 'success', text: 'Your snippet was updated'}
      res.redirect('/')
@@ -159,7 +174,22 @@ router.route('/user')
 })
 
 function encrypt (password) {
-  return password + 'my5@lt'
+  password = password + 'my5@lt'
+  password = hashCode(password)
+  return String(password)
+}
+
+function hashCode (str) {
+  let len = str.length
+
+  let hash = 0
+  for (let i = 1; i <= len; i++) {
+    let char = str.charCodeAt((i - 1))
+    hash += char * Math.pow(31, (len - i))
+    hash = hash & hash // javascript limitation to force to 32 bits
+  }
+
+  return hash
 }
 
 // Exports.

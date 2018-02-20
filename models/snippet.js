@@ -3,7 +3,8 @@ const Schema = mongoose.Schema
 
 // Create a schema, with customized error messages.
 const snippetSchema = new Schema({
-  snippet: String
+  snippet: String,
+  user: String
 })
 
 // Create a model using the schema.

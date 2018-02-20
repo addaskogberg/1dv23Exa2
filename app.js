@@ -4,8 +4,10 @@ const bodyParser = require('body-parser')
 const handlebars = require('express-handlebars')
 const mongoose = require('./config/mongoose.js')
 const session = require('express-session')
+const helmet = require('helmet')
 
 const app = express()
+app.use(helmet())
 app.set('port', process.env.PORT || 3000)
 
 // Connect to mongodb.
@@ -52,15 +54,6 @@ app.use((req, res, next) => {
 // Define routes
 app.use('/', require('./routes/routes.js'))
 
-/*
-app.get('/', function (req, res) {
-  res.render('layouts/home')
-})
-app.get('/form', function (req, res) {
-  res.render('layouts/form')
-})
-*/
-
 // 404 page
 app.use(function (req, res, next) {
   res.status(404)
@@ -81,15 +74,7 @@ app.use(function (err, req, res, next) {
 // body-Parser
 app.use(bodyParser.urlencoded({extended: true}))
 
-// initiating routs
-// app.use('/layouts', require('./routes/routes.js'))
 app.use((req, res, next) => res.status(404).render('404'))
-
-/* app.use((req, res, next) => {
-  const error = new Error('not found')
-  error.status = 404
-  next(error)
-}) */
 
 app.listen(app.get('port'), function () {
   console.log('Express started on http://localhost:' + app.get('port') + ' ; press ctrl-c to terminate')
