@@ -5,20 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" integrity="sha256-ECB9bbROLGm8wOoEbHcHRxlHgzGqYpDtNTgDTyDz0wg=" crossorigin="anonymous" />
+  <link rel="stylesheet" type="text/css" href="/css/snippet.css"/>
   <title>Examination2</title>
 </head>
 
 <body>
   {{>navigation}}
-
   {{>authenticated}}
-
   {{>flash}}
 
-  
-  {{{body}}}
+  <div class="content">
+    {{{body}}}
+  </div>
 
   {{>footer}}
-  
 </body>
 </html>

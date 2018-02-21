@@ -31,6 +31,7 @@
     "express-session": "^1.15.6",
     "helmet": "^3.11.0",
     "mongoose": "^5.0.5",
+    "path": "^0.12.7",
     "standard": "^10.0.3"
   },
   "devDependencies": {

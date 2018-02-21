@@ -1,0 +1,102 @@
+body {
+  background-color: rgb(243, 216, 181);
+  margin: 0;
+}
+
+.content {
+  margin: 10px;
+}
+
+.navigation ul li {
+  float: left;
+  list-style-type: none;
+  margin: 20px;
+}
+
+.navigation ul li a {
+  text-decoration: none;
+  color: wheat;
+  padding: 5px;
+  border: 1px solid wheat;
+}
+
+.user a {
+  text-decoration: none;
+  color: rgb(2, 2, 44);  
+  padding: 5px;
+  border: 1px solid rgb(2, 2, 44);  
+}
+
+.user {
+  color: rgb(2, 2, 44);  
+  clear: both;
+  padding-left: 80%;
+  position: relative;
+  top: 15px;
+  width: 200px;
+}
+
+.viewsnippet {
+  padding: 5px;
+  border: 1px solid  rgb(2, 2, 44);  
+  color: rgb(2, 2, 44);
+  text-decoration: none;
+}
+
+.navigation {
+  width: 100%;
+  height: 60px;
+  background-color: rgb(2, 2, 44);
+  color: white;
+  margin: 0;
+  margin-top: -25px;
+}
+
+h1, h2 {
+  clear: both;
+}
+
+pre {
+  background-color: whitesmoke;
+}
+
+.snippets li {
+  list-style-type: none;
+}
+
+footer {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  height: 60px;
+  background-color: rgb(2, 2, 44);
+  color: white;
+  margin: 0;
+}
+
+footer p {
+  margin: 16px;
+  text-align: center;
+}
+
+footer a {
+  color: wheat; 
+}
+
+.alert {
+  color: black;
+  margin: 30px;
+  padding: 30px;
+  font-size: 2em;
+}
+
+.alert-success {
+  background-color: lightgreen;
+  border: 2px solid green;
+}
+
+.alert-danger {
+  background-color: gold;
+  border: 2px solid orange;
+}

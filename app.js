@@ -1,13 +1,19 @@
-
+/**
+ *
+ * @author Adda Skogberg
+ * @version 1.0
+ */
 const express = require('express')
 const bodyParser = require('body-parser')
 const handlebars = require('express-handlebars')
 const mongoose = require('./config/mongoose.js')
 const session = require('express-session')
 const helmet = require('helmet')
-
 const app = express()
+const path = require('path')
+
 app.use(helmet())
+
 app.set('port', process.env.PORT || 3000)
 
 // Connect to mongodb.
@@ -41,7 +47,7 @@ if (app.get('env') === 'production') {
   app.set('trust proxy', 1) // trust first proxy
   sessionOptions.cookie.secure = true // serve secure cookies
 }
-
+ // sessions
 app.use(session(sessionOptions))
 
 // Flash message
@@ -50,6 +56,9 @@ app.use((req, res, next) => {
   delete req.session.flash
   next()
 })
+
+// Serve static files.
+app.use(express.static(path.join(__dirname, 'public')))
 
 // Define routes
 app.use('/', require('./routes/routes.js'))
@@ -64,7 +73,7 @@ app.use(function (req, res, next) {
   res.status(400)
   res.render('error/400')
 })
-
+// 500 page
 app.use(function (err, req, res, next) {
   console.error(err.stack)
   res.status(500)
@@ -73,8 +82,6 @@ app.use(function (err, req, res, next) {
 
 // body-Parser
 app.use(bodyParser.urlencoded({extended: true}))
-
-app.use((req, res, next) => res.status(404).render('404'))
 
 app.listen(app.get('port'), function () {
   console.log('Express started on http://localhost:' + app.get('port') + ' ; press ctrl-c to terminate')

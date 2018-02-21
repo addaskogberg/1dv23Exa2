@@ -1,3 +1,8 @@
+/**
+ * model for snippets in mongodb
+ * author Adda Skogberg
+ * ref
+ */
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 

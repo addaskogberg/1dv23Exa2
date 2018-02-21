@@ -1,3 +1,8 @@
+/**
+ * routes for snippets
+ * @author Adda Skogberg
+ * @version 1.0
+ */
 const router = require('express').Router()
 const Snippet = require('../models/snippet')
 const User = require('../models/user')
@@ -16,6 +21,7 @@ router.route('/')
   }
 })
 
+// login user
 router.route('/login')
 .get((req, res) => {
   try {
@@ -30,9 +36,6 @@ router.route('/login')
   try {
     let formusername = req.body.username
     let formpassword = encrypt(req.body.password)
-    console.log(formpassword)
-    // let users = await User.find({username}).exec()
-
     User.findOne({ username: formusername }, function (err, user) {
       if (err) throw err
 
@@ -56,6 +59,7 @@ router.route('/login')
   }
 })
 
+// logout the user
 router.route('/logout')
 .get(async (req, res) => {
   try {
@@ -112,13 +116,15 @@ router.route('/viewsnippet/:id')
 })
 
 // update snippet
-
 router.route('/updatesnippet/:id')
 .get(async (req, res) => {
   const snippet = await Snippet.findOne({ _id: req.params.id })
-  res.render('layouts/updatesnippet', { snippet: snippet.snippet, id: snippet._id, user: req.session.user })
+  if (req.session.user === snippet.user) {
+    res.render('layouts/updatesnippet', { snippet: snippet.snippet, id: snippet._id, user: req.session.user })
+  } else {
+    res.render('error/403')
+  }
 })
-
  .post(async(req, res, next) => {
    try {
      const snippet = await Snippet.findOne({ _id: req.body.dbid })
@@ -134,14 +140,19 @@ router.route('/updatesnippet/:id')
    }
  })
 
-// delete snippet here
+// delete snippet
 router.route('/deletesnippet/:id')
-.get((req, res) => {
-  Snippet.deleteOne({ _id: req.params.id }, function (err) {
-    if (err) throw err
-    req.session.flash = {type: 'success', text: 'Your snippet was deleted'}
-    res.redirect('/')
-  })
+.get(async(req, res) => {
+  const snippet = await Snippet.findOne({ _id: req.params.id })
+  if (req.session.user === snippet.user) {
+    Snippet.deleteOne({ _id: req.params.id }, function (err) {
+      if (err) throw err
+      req.session.flash = {type: 'success', text: 'Your snippet was deleted'}
+      res.redirect('/')
+    })
+  } else {
+    res.render('error/403')
+  }
 })
 
 // create user
@@ -173,6 +184,7 @@ router.route('/user')
   }
 })
 
+// encrypt and add salt to password
 function encrypt (password) {
   password = password + 'my5@lt'
   password = hashCode(password)
@@ -181,7 +193,6 @@ function encrypt (password) {
 
 function hashCode (str) {
   let len = str.length
-
   let hash = 0
   for (let i = 1; i <= len; i++) {
     let char = str.charCodeAt((i - 1))
