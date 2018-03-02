@@ -166,15 +166,31 @@ router.route('/user')
     })
   }
 })
-.post(async(req, res, next) => {
+.post((req, res, next) => {
+  var carryOn = false
   try {
-    let user = new User({
-      username: req.body.username,
-      password: encrypt(req.body.password)
+    let formusername = req.body.username
+    User.findOne({ username: formusername }, function (err, user) {
+      if (err) throw err
+
+      if (user === null) {
+        console.log('user doesnt exist')
+        carryOn = true
+        console.log('should be true: ' + carryOn)
+        let user = new User({
+          username: req.body.username,
+          password: encrypt(req.body.password)
+        })
+        user.save()
+        req.session.flash = {type: 'success', text: 'Your account has been created'}
+        res.redirect('.')
+      } else {
+        console.log('should be false: ' + carryOn)
+        res.render('layouts/user', {
+          flash: {type: 'danger', text: 'Username Taken'}
+        })
+      }
     })
-    await user.save()
-    req.session.flash = {type: 'success', text: 'Your account has been created'}
-    res.redirect('.')
   } catch (error) {
     return res.render('layouts/user', {
       validationErrors: [error.message] || [error.errors.snippet.message],
@@ -182,6 +198,7 @@ router.route('/user')
       password: req.body.password
     })
   }
+ // }
 })
 
 // encrypt and add salt to password
