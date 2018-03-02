@@ -167,16 +167,12 @@ router.route('/user')
   }
 })
 .post((req, res, next) => {
-  var carryOn = false
   try {
     let formusername = req.body.username
     User.findOne({ username: formusername }, function (err, user) {
       if (err) throw err
 
       if (user === null) {
-        console.log('user doesnt exist')
-        carryOn = true
-        console.log('should be true: ' + carryOn)
         let user = new User({
           username: req.body.username,
           password: encrypt(req.body.password)
@@ -185,7 +181,6 @@ router.route('/user')
         req.session.flash = {type: 'success', text: 'Your account has been created'}
         res.redirect('.')
       } else {
-        console.log('should be false: ' + carryOn)
         res.render('layouts/user', {
           flash: {type: 'danger', text: 'Username Taken'}
         })
@@ -198,7 +193,6 @@ router.route('/user')
       password: req.body.password
     })
   }
- // }
 })
 
 // encrypt and add salt to password
